@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE_TRUTH | Neural Interface</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syncopate:wght@700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* --- CYBERPUNK THEME --- */
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: #050505;
+            overflow-x: hidden;
+        }
+
+        /* Scanlines */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.2));
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        /* Glitch Text */
+        .glitch-hover:hover {
+            animation: glitch 0.2s cubic-bezier(.25, .46, .45, .94) both infinite;
+            color: #f43f5e;
+            text-shadow: 2px 2px #d946ef;
+        }
+
+        @keyframes glitch {
+            0% {
+                transform: translate(0)
+            }
+
+            20% {
+                transform: translate(-2px, 2px)
+            }
+
+            40% {
+                transform: translate(-2px, -2px)
+            }
+
+            60% {
+                transform: translate(2px, 2px)
+            }
+
+            80% {
+                transform: translate(2px, -2px)
+            }
+
+            100% {
+                transform: translate(0)
+            }
+        }
+
+        /* Neon Pulse */
+        .thinking-mode {
+            animation: glow-pulse 0.8s infinite;
+            border-color: #f43f5e;
+        }
+
+        @keyframes glow-pulse {
+            0% {
+                box-shadow: 0 0 5px #f43f5e, 0 0 10px #be123c;
+            }
+
+            50% {
+                box-shadow: 0 0 20px #f43f5e, 0 0 30px #be123c;
+            }
+
+            100% {
+                box-shadow: 0 0 5px #f43f5e, 0 0 10px #be123c;
+            }
+        }
+    </style>
+</head>
+
+<body
+    class="min-h-screen flex flex-col items-center justify-center p-4 text-rose-500 relative selection:bg-rose-500 selection:text-white">
+
+    <div class="scanlines"></div>
+
+    <div class="absolute top-0 left-0 w-full h-full overflow-hidden -z-10">
+        <div
+            class="absolute top-1/4 left-1/4 w-64 h-64 bg-rose-900 rounded-full mix-blend-screen filter blur-[128px] opacity-20">
+        </div>
+        <div
+            class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-purple-900 rounded-full mix-blend-screen filter blur-[128px] opacity-20">
+        </div>
+    </div>
+
+    <div class="relative z-20 w-full max-w-3xl backdrop-blur-sm bg-black/80 border border-rose-900/50 rounded-xl p-8 shadow-2xl"
+        id="mainCard">
+
+        <div class="text-center mb-10">
+            <h1 class="glitch-hover cursor-default text-4xl md:text-6xl font-bold tracking-tighter text-white mb-2"
+                style="font-family: 'Syncopate', sans-serif;">THE_TRUTH</h1>
+            <div class="flex items-center justify-center gap-3 text-xs md:text-sm text-gray-500 font-mono">
+                <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+                <span>API_STATUS: <span id="statusIndicator" class="text-green-500">ONLINE</span></span>
+                <span class="text-gray-700">|</span>
+                <span>V.3.0.1</span>
+            </div>
+        </div>
+
+        <div class="space-y-6">
+            <div class="relative group">
+                <div
+                    class="absolute -inset-0.5 bg-gradient-to-r from-rose-600 to-purple-600 rounded-lg blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200">
+                </div>
+                <div class="relative flex flex-col md:flex-row bg-black rounded-lg p-1 gap-1">
+                    <input type="text" id="animalInput" placeholder="ENTER SUBJECT..."
+                        class="w-full bg-transparent text-white p-4 text-lg outline-none placeholder-gray-700 font-bold tracking-wider font-mono uppercase">
+
+                    <button onclick="randomAnimal()"
+                        class="md:w-auto w-full bg-gray-900 hover:bg-purple-900 text-white font-bold py-3 px-6 rounded transition-all flex items-center justify-center border border-gray-800 hover:border-purple-500">
+                        <span class="text-xl">🎲</span>
+                    </button>
+
+                    <button onclick="getFact()" id="generateBtn"
+                        class="md:w-auto w-full bg-rose-700 hover:bg-rose-600 text-white font-bold py-3 px-8 rounded transition-all flex items-center justify-center gap-2 hover:shadow-[0_0_15px_rgba(244,63,94,0.5)]">
+                        <span>REVEAL</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-2 text-xs font-mono text-gray-600">
+                <button onclick="setInput('Linux')" class="hover:text-rose-400">[LINUX]</button>
+                <button onclick="setInput('Python')" class="hover:text-rose-400">[PYTHON]</button>
+                <button onclick="setInput('Elon Musk')" class="hover:text-rose-400">[ELON]</button>
+                <button onclick="setInput('The Internet')" class="hover:text-rose-400">[WEB]</button>
+            </div>
+        </div>
+
+        <div id="outputBox"
+            class="hidden mt-8 transition-all duration-300 ease-out transform translate-y-4 opacity-0 border-t border-rose-900/30 pt-6">
+            <div class="bg-black/40 border-l-2 border-rose-500 p-6 relative min-h-[100px]">
+                <div class="flex justify-between items-start mb-4 opacity-70">
+                    <div class="text-[10px] text-rose-400 font-bold tracking-widest">>>> TRUTH_STREAM_V4</div>
+                    <div class="flex gap-2">
+                        <button onclick="downloadLocal()"
+                            class="text-[10px] border border-rose-800 text-rose-500 px-2 py-1 hover:bg-rose-900 hover:text-white transition uppercase">
+                            ⬇️ Download JSON
+                        </button>
+                        <button onclick="saveToServer()" id="serverSaveBtn"
+                            class="text-[10px] border border-rose-800 text-rose-500 px-2 py-1 hover:bg-rose-900 hover:text-white transition uppercase">
+                            💾 Save to Cloud
+                        </button>
+                    </div>
+                </div>
+
+                <p id="factText"
+                    class="text-xl md:text-2xl text-rose-100 leading-relaxed font-medium drop-shadow-md font-mono"></p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- CONFIGURATION ---
+        // If testing locally, use http://localhost:3000
+        // If deployed to Vercel, change this to your Vercel URL
+        const API_URL = 'http://localhost:3000/api';
+
+        let currentAnimal = "";
+        let currentFact = "";
+        const targets = ["Cat", "Dog", "Wolf", "Fish", "Bear", "Lion", "Python Dev", "Linux User", "Server", "Database", "Docker Container", "Elon Musk", "The Moon", "My WiFi", "JavaScript"];
+
+        function setInput(val) { document.getElementById('animalInput').value = val; getFact(); }
+        function randomAnimal() { document.getElementById('animalInput').value = targets[Math.floor(Math.random() * targets.length)]; getFact(); }
+
+        // --- 1. REVEAL TRUTH ---
+        async function getFact() {
+            const input = document.getElementById('animalInput');
+            const btn = document.getElementById('generateBtn');
+            const card = document.getElementById('mainCard');
+            const outputBox = document.getElementById('outputBox');
+            const factText = document.getElementById('factText');
+            const saveBtn = document.getElementById('serverSaveBtn');
+
+            const animal = input.value || 'Cat';
+            currentAnimal = animal;
+
+            // UI Loading
+            btn.innerHTML = `Decrypting...`; btn.disabled = true;
+            card.classList.add('thinking-mode');
+            outputBox.classList.add('hidden'); outputBox.classList.remove('opacity-100', 'translate-y-0');
+            factText.innerHTML = "";
+            saveBtn.innerHTML = "💾 Save to Cloud"; saveBtn.disabled = false;
+
+            try {
+                // Call NestJS API
+                const response = await fetch(`${API_URL}/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ animal: animal })
+                });
+
+                const data = await response.json();
+                currentFact = data.fact;
+
+                // Success UI
+                card.classList.remove('thinking-mode');
+                outputBox.classList.remove('hidden');
+                setTimeout(() => {
+                    outputBox.classList.add('opacity-100', 'translate-y-0');
+                    typeWriter(data.fact);
+                }, 50);
+
+            } catch (error) {
+                console.error(error);
+                card.classList.remove('thinking-mode');
+                outputBox.classList.remove('hidden');
+                setTimeout(() => {
+                    outputBox.classList.add('opacity-100', 'translate-y-0');
+                    factText.innerHTML = "<span class='text-red-500'>[CONNECTION_LOST]</span> Is the server running on Port 3000?";
+                }, 50);
+            } finally {
+                btn.innerHTML = `REVEAL`; btn.disabled = false;
+            }
+        }
+
+        // --- 2. SAVE TO NESTJS SERVER ---
+        async function saveToServer() {
+            if (!currentFact) return;
+            const btn = document.getElementById('serverSaveBtn');
+            btn.innerHTML = "⏳ Saving...";
+
+            try {
+                const response = await fetch(`${API_URL}/save`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ animal: currentAnimal, fact: currentFact })
+                });
+                const res = await response.json();
+
+                if (res.status === 'success') {
+                    btn.innerHTML = "✅ Saved";
+                    btn.disabled = true;
+                } else {
+                    btn.innerHTML = "❌ Error";
+                }
+            } catch (e) {
+                btn.innerHTML = "❌ Failed";
+            }
+        }
+
+        // --- 3. DOWNLOAD CLIENT SIDE (For Vercel users) ---
+        function downloadLocal() {
+            if (!currentFact) return;
+            const dataObj = {
+                subject: currentAnimal,
+                fact: currentFact,
+                timestamp: new Date().toISOString(),
+                source: "THE_TRUTH API"
+            };
+            const blob = new Blob([JSON.stringify(dataObj, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `${currentAnimal.replace(/[^a-z0-9]/gi, '_')}_fact.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function typeWriter(text, i = 0) {
+            const element = document.getElementById('factText');
+            if (i < text.length) {
+                element.innerHTML += text.charAt(i);
+                setTimeout(() => typeWriter(text, i + 1), Math.random() * 30 + 10);
+            }
+        }
+
+        // Enter Key Support
+        document.getElementById('animalInput').addEventListener("keypress", function (event) {
+            if (event.key === "Enter") getFact();
+        });
+    </script>
+</body>
+
+</html>
