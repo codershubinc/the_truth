@@ -171,7 +171,9 @@
         // --- CONFIGURATION ---
         // If testing locally, use http://localhost:3000
         // If deployed to Vercel, change this to your Vercel URL
-        const API_URL = 'http://localhost:3000/api';
+        const API_URL = `${window.location.origin}/api`;
+        // console.log("Windows  host", window.location.origin);
+
 
         let currentAnimal = "";
         let currentFact = "";
@@ -201,10 +203,9 @@
 
             try {
                 // Call NestJS API
-                const response = await fetch(`${API_URL}/generate`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ animal: animal })
+                const response = await fetch(`${API_URL}/generate?animal=${encodeURIComponent(animal)}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
                 });
 
                 const data = await response.json();

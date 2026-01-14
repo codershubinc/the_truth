@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Get } from '@nestjs/common';
+import { Body, Controller, Post, Get, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller('api')
@@ -7,7 +7,8 @@ export class AppController {
 
 
   @Get('generate')
-  generate(@Body('animal') animal: string) {
+  generate(@Body('animal') animal: string, @Query('animal') Q: string) {
+    if (!animal) animal = Q
     const cleanAnimal = animal ? animal.charAt(0).toUpperCase() + animal.slice(1) : 'Random';
     const { fact, subject } = this.appService.generateFact(cleanAnimal);
 
