@@ -20,6 +20,7 @@ export class AppController {
 
   @Post('save')
   save(@Body() body: { animal: string; fact: string }) {
-    return this.appService.saveFact(body.animal, body.fact);
+    // return this.appService.saveFact(body.animal, body.fact);
+    return "Done Saving";
   }
 }
