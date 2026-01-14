@@ -180,7 +180,7 @@
         const targets = ["Cat", "Dog", "Wolf", "Fish", "Bear", "Lion", "Python Dev", "Linux User", "Server", "Database", "Docker Container", "Elon Musk", "The Moon", "My WiFi", "JavaScript"];
 
         function setInput(val) { document.getElementById('animalInput').value = val; getFact(); }
-        function randomAnimal() { document.getElementById('animalInput').value = targets[Math.floor(Math.random() * targets.length)]; getFact(); }
+        function randomAnimal() { document.getElementById('animalInput').value = "Random"; getFact(); }
 
         // --- 1. REVEAL TRUTH ---
         async function getFact() {
